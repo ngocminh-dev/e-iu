@@ -2,23 +2,36 @@
 <HTML>
 
 <HEAD>
-    <TITLE>I Love You</TITLE>
-    <META NAME="Generator" CONTENT="EditPlus">
-    <META NAME="Author" CONTENT="">
-    <META NAME="Keywords" CONTENT="">
-    <META NAME="Description" CONTENT="">
+    <TITLE>Minh ♥ Hồng Linh</TITLE>
     <style>
         html,
         body {
             overflow: hidden;
             padding: 0;
             margin: 0;
-            background: #000;
+           
+        }
+        audio{
+            visibility: none;
+        }
+        #bg{
+            background-image: url(img/img1.jpg);
+  background-color: #cccccc;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+        }
+        #pinkboard{
+           
+  
+  position: relative;
         }
         
         canvas {
             position: absolute;
-            width: 100%;
+            width: 120%;
             height: 100%;
         }
         
@@ -34,44 +47,45 @@
         
         @keyframes heart {
             0% {
-                transform: scale(1);
+                transform: scale(2);
             }
             30% {
-                transform: scale(.8);
+                transform: scale(1.2);
             }
             /* 60% {
                 transform: scale(1.2);
             } */
             100% {
-                transform: scale(1);
+                transform: scale(2);
             }
         }
     </style>
 </HEAD>
 
 <BODY>
-
-    <canvas id="pinkboard">
+    <audio autoplay >
+        <source src="audio/music.mp3">
+        
+        </audio>
+    <div id="bg">
+        <canvas id="pinkboard">
+        
         <canvas id="pinkboard">
         </canvas>
+        
     </canvas>
+    </div>
+    
     <script>
-        /*
-         * Settings
-         */
         var settings = {
             particles: {
-                length: 1500, // maximum amount of particles
-                duration: 2, // particle duration in sec
-                velocity: 135, // particle velocity in pixels/sec
-                effect: -0.35, // play with this for a nice effect
-                size: 14, // particle size in pixels
+                length: 1500,
+                duration: 2, 
+                velocity: 135,
+                effect: -0.35, 
+                size: 14, 
             },
         };
-
-        /*
-         * RequestAnimationFrame polyfill by Erik Möller
-         */
         (function() {
             var b = 0;
             var c = ["ms", "moz", "webkit", "o"];
@@ -97,9 +111,6 @@
             }
         }());
 
-        /*
-         * Point class
-         */
         var Point = (function() {
             function Point(x, y) {
                 this.x = (typeof x !== 'undefined') ? x : 0;
@@ -125,9 +136,6 @@
             return Point;
         })();
 
-        /*
-         * Particle class
-         */
         var Particle = (function() {
             function Particle() {
                 this.position = new Point();
@@ -162,9 +170,7 @@
             return Particle;
         })();
 
-        /*
-         * ParticlePool class
-         */
+    
         var ParticlePool = (function() {
             var particles,
                 firstActive = 0,
@@ -225,16 +231,13 @@
             return ParticlePool;
         })();
 
-        /*
-         * Putting it all together
-         */
         (function(canvas) {
             var context = canvas.getContext('2d'),
                 particles = new ParticlePool(settings.particles.length),
-                particleRate = settings.particles.length / settings.particles.duration, // particles/sec
+                particleRate = settings.particles.length / settings.particles.duration, 
                 time;
 
-            // get point on heart with -PI <= t <= PI
+    
             function pointOnHeart(t) {
                 return new Point(
                     160 * Math.pow(Math.sin(t), 3),
@@ -242,53 +245,48 @@
                 );
             }
 
-            // creating the particle image using a dummy canvas
+        
             var image = (function() {
                 var canvas = document.createElement('canvas'),
                     context = canvas.getContext('2d');
                 canvas.width = settings.particles.size;
                 canvas.height = settings.particles.size;
-                // helper function to create the path
+        
                 function to(t) {
                     var point = pointOnHeart(t);
                     point.x = settings.particles.size / 3 + point.x * settings.particles.size / 550;
                     point.y = settings.particles.size / 3 - point.y * settings.particles.size / 550;
                     return point;
                 }
-                // create the path
+
                 context.beginPath();
                 var t = -Math.PI;
                 var point = to(t);
                 context.moveTo(point.x, point.y);
                 while (t < Math.PI) {
-                    t += 0.01; // baby steps!
+                    t += 0.01; 
                     point = to(t);
                     context.lineTo(point.x, point.y);
                 }
                 context.closePath();
-                // create the fill
+
                 context.fillStyle = '#ea80b0';
                 context.fill();
-                // create the image
+            
                 var image = new Image();
                 image.src = canvas.toDataURL();
                 return image;
             })();
 
-            // render that thing!
-            function render() {
-                // next animation frame
-                requestAnimationFrame(render);
 
-                // update time
+            function render() {
+                
+                requestAnimationFrame(render);
+             
                 var newTime = new Date().getTime() / 1000,
                     deltaTime = newTime - (time || newTime);
                 time = newTime;
-
-                // clear canvas
                 context.clearRect(0, 0, canvas.width, canvas.height);
-
-                // create new particles
                 var amount = particleRate * deltaTime;
                 for (var i = 0; i < amount; i++) {
                     var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
@@ -296,19 +294,16 @@
                     particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
                 }
 
-                // update and draw particles
                 particles.update(deltaTime);
                 particles.draw(context, image);
             }
 
-            // handle (re-)sizing of the canvas
             function onResize() {
                 canvas.width = canvas.clientWidth;
                 canvas.height = canvas.clientHeight;
             }
             window.onresize = onResize;
 
-            // delay rendering bootstrap
             setTimeout(function() {
                 onResize();
                 render();
