@@ -63,7 +63,7 @@
 </HEAD>
 
 <BODY>
-    <audio autoplay >
+    <audio id="myAudio" autoplay muted>
         <source src="audio/music.mp3">
         
         </audio>
@@ -76,6 +76,13 @@
     </canvas>
     </div>
     
+    <script>
+        document.addEventListener("click", function() {
+    let audio = document.getElementById("myAudio");
+    audio.muted = false;
+    audio.play();
+});
+        </script>
     <script>
         var settings = {
             particles: {
